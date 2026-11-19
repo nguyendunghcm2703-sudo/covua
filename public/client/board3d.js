@@ -19,7 +19,8 @@ const SEAT_POLAR_TALL = (30 * Math.PI) / 180; // màn dọc: nhìn cao hơn đ�
 const TOP_POLAR = 0.14;
 const TARGET = new THREE.Vector3(0, 0, 0);
 const PIECE_SCALE = 0.6; // mô hình GLB cao 1.5-2.6 đơn vị, đế rộng 1.05; thu về vừa một ô
-const MODEL_URL = (t) => `/models/${t}.glb`;
+const MODEL_FILE = { p: 'pawn', r: 'rook', b: 'bishop', n: 'knight', q: 'queen', k: 'king' };
+const MODEL_URL = (t) => `/models/${MODEL_FILE[t]}.glb`;
 const PIECE_HEIGHT = { p: 1.52, r: 1.87, b: 2.23, n: 2.3, q: 2.38, k: 2.62 };
 const TRAY_H = 0.08;
 const MARK_Y = 0.012;
