@@ -998,7 +998,7 @@ $('btnRotate').addEventListener('click', () => {
   renderViewUi();
 });
 $('btnSeat').addEventListener('click', () => view.resetCamera());
-$('btnTop').addEventListener('click', () => view.topView());
+// Đã bỏ nút "Nhìn từ trên": nhìn thẳng từ trên xuống khó phân biệt các loại quân cờ vua.
 $('btnSound').addEventListener('click', () => {
   sound = !sound;
   setSoundEnabled(sound);
