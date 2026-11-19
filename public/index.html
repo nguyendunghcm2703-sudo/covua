@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#140d08">
+  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+  <meta name="referrer" content="no-referrer">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Cờ vua">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>Cờ vua 3D</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='29' fill='%23f1dbab' stroke='%23a8160f' stroke-width='4'/%3E%3Ctext x='32' y='45' font-size='34' text-anchor='middle' fill='%23a8160f'%3E帥%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="client/style.css">
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+      }
+    }
+  </script>
+</head>
+<body data-mode="local">
+  <div id="stage"></div>
+
+  <div id="hud">
+    <span id="turnDot" class="dot white"></span>
+    <span id="turnText">Lượt: Trắng</span>
+    <span id="msg"></span>
+  </div>
+
+  <div id="roomBar" class="online-only">
+    <span id="roomInfo"></span>
+  </div>
+
+  <div id="toolbar">
+    <button id="btnNew" type="button" class="local-only">Ván mới</button>
+    <button id="btnUndo" type="button" class="local-only">Đi lại</button>
+    <button id="btnAI" type="button" class="local-only">Chơi với máy</button>
+
+    <button id="btnInvite" type="button" class="online-only">Mời bạn</button>
+    <button id="btnDraw" type="button" class="online-only">Xin hòa</button>
+    <button id="btnResign" type="button" class="online-only">Xin thua</button>
+    <button id="btnLeave" type="button" class="online-only">Rời phòng</button>
+
+    <button id="btnMore" type="button" aria-expanded="false">⋯ Thêm</button>
+
+    <div id="moreGroup">
+      <button id="btnFlip" type="button" class="local-only">Lật bàn</button>
+      <button id="btnRemote" type="button" class="local-only">Chơi với bạn ở xa</button>
+      <button id="btnAuto" type="button" class="local-only" aria-pressed="false">Tự lật: tắt</button>
+      <button id="btnView" type="button">Chế độ: 3D</button>
+      <button id="btnRotate" type="button" class="view3d-only" aria-pressed="false">Xoay: khóa</button>
+      <button id="btnSeat" type="button" class="view3d-only">Góc ngồi</button>
+      <button id="btnTop" type="button" class="view3d-only">Nhìn từ trên</button>
+      <button id="btnSound" type="button" aria-pressed="true">Âm thanh: bật</button>
+      <button id="btnQuality" type="button" class="view3d-only" aria-pressed="false">Đồ họa: cao</button>
+      <button id="btnFull" type="button">Toàn màn hình</button>
+    </div>
+  </div>
+
+  <button id="btnMenu" type="button" aria-label="Ẩn hoặc hiện menu" aria-expanded="true">✕</button>
+
+  <div id="offer" class="card" hidden>
+    <div id="offerText">Đối thủ xin hòa</div>
+    <div class="row">
+      <button id="offerYes" type="button">Đồng ý</button>
+      <button id="offerNo" type="button">Từ chối</button>
+    </div>
+  </div>
+
+  <div id="banner" class="card" hidden>
+    <div id="bannerText"></div>
+    <div class="row">
+      <button id="bannerNew" type="button">Ván mới</button>
+      <button id="bannerLeave" type="button" class="online-only">Rời phòng</button>
+    </div>
+  </div>
+
+  <div id="fsHelp" class="card" hidden>
+    <div id="fsHelpTitle">Bật toàn màn hình</div>
+    <div id="fsHelpBody"></div>
+    <button id="fsHelpOk" type="button" class="primary">Đã hiểu</button>
+  </div>
+
+  <div id="toast" role="status" hidden></div>
+
+  <div id="gate" hidden>
+    <div class="panel">
+      <h1>Chơi với bạn ở xa</h1>
+      <p class="sub">Đây là phần chơi riêng cá nhân nội bộ. Vui lòng nhập mã để tiếp tục.</p>
+      <input id="gateInput" type="password" placeholder="Mã truy cập" maxlength="128" autocomplete="off" autocapitalize="off" spellcheck="false">
+      <div id="gateErr" role="alert"></div>
+      <div class="row">
+        <button id="gateCancel" type="button">Hủy</button>
+        <button id="gateGo" type="button" class="primary">Vào</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="aiSetup" hidden>
+    <div class="panel">
+      <h1>Chơi với máy</h1>
+      <p class="sub">Chơi một mình, không cần mạng và không cần mã.</p>
+
+      <fieldset>
+        <legend>Cấp độ</legend>
+        <label><input type="radio" name="aiLevel" value="de"> Dễ — máy hay đi sai</label>
+        <label><input type="radio" name="aiLevel" value="vua" checked> Vừa — đủ để luyện tập</label>
+        <label><input type="radio" name="aiLevel" value="kho"> Khó — máy tính kỹ, nghĩ lâu hơn</label>
+      </fieldset>
+
+      <fieldset>
+        <legend>Bạn cầm quân</legend>
+        <label><input type="radio" name="aiSide" value="w" checked> Trắng (đi trước)</label>
+        <label><input type="radio" name="aiSide" value="b"> Đen</label>
+        <label><input type="radio" name="aiSide" value="any"> Ngẫu nhiên</label>
+      </fieldset>
+
+      <button id="btnAiStart" type="button" class="primary">Bắt đầu</button>
+      <button id="btnAiClose" type="button" class="link">Cờ hai người một máy</button>
+    </div>
+  </div>
+
+  <div id="promo" hidden>
+    <div class="panel">
+      <h1>Phong cấp</h1>
+      <p class="sub">Chọn quân thay cho tốt.</p>
+      <div class="promoRow">
+        <button type="button" data-p="q"></button>
+        <button type="button" data-p="r"></button>
+        <button type="button" data-p="b"></button>
+        <button type="button" data-p="n"></button>
+      </div>
+      <button id="promoCancel" type="button" class="link">Hủy, chọn lại nước đi</button>
+    </div>
+  </div>
+
+  <div id="lobby" hidden>
+    <div class="panel">
+      <h1>Chơi với bạn ở xa</h1>
+      <p class="sub">Tạo phòng rồi gửi link cho bạn, hoặc nhập mã phòng bạn gửi.</p>
+
+      <fieldset>
+        <legend>Bạn cầm quân</legend>
+        <label><input type="radio" name="side" value="w" checked> Trắng (đi trước)</label>
+        <label><input type="radio" name="side" value="b"> Đen</label>
+        <label><input type="radio" name="side" value="any"> Ngẫu nhiên</label>
+      </fieldset>
+
+      <button id="btnCreate" type="button" class="primary">Tạo phòng và mời bạn</button>
+
+      <div class="row">
+        <input id="codeInput" placeholder="Mã phòng" maxlength="12" autocomplete="off" autocapitalize="characters" spellcheck="false">
+        <button id="btnJoin" type="button">Vào phòng</button>
+      </div>
+      <div id="lobbyErr" role="alert"></div>
+
+      <button id="btnLobbyClose" type="button" class="link">Quay lại cờ hai người một máy</button>
+    </div>
+  </div>
+
+  <div id="loading">Đang tải bàn cờ…</div>
+
+  <script>
+    setTimeout(function () {
+      var el = document.getElementById('loading');
+      if (el && !el.hidden) {
+        el.textContent = 'Không tải được trang. Hãy kiểm tra kết nối mạng rồi tải lại.';
+      }
+    }, 10000);
+  </script>
+  <script>
+    if ('serviceWorker' in navigator && location.protocol === 'https:') {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('/sw.js').catch(function () {});
+      });
+    }
+  </script>
+  <script type="module" src="client/main.js"></script>
+</body>
+</html>

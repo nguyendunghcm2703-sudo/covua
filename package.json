@@ -1,0 +1,18 @@
+{
+  "name": "co-vua-3d",
+  "version": "0.4.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --import ./tests/register-stubs.mjs --test \"tests/*.test.js\"",
+    "build": "node build.mjs",
+    "build:plain": "node build.mjs --plain",
+    "dev": "npm run build:plain && wrangler dev",
+    "deploy": "npm run build && wrangler deploy"
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.0",
+    "javascript-obfuscator": "^4.1.1",
+    "wrangler": "^4.0.0"
+  }
+}
