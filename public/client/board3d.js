@@ -150,7 +150,8 @@ export function createView(container) {
         if (o.isMesh && o.material && o.material.name === 'body') o.material = bodyMats[side];
       });
       m.scale.setScalar(PIECE_SCALE);
-      m.rotation.y = side === 'w' ? Math.PI / 2 : -Math.PI / 2; // mã nhìn về phía đối thủ
+      // Mã quay nghiêng (hơi hướng về phía đối thủ) để nhìn thấy rõ hình đầu ngựa từ phía người chơi.
+      m.rotation.y = side === 'w' ? Math.PI / 9 : Math.PI + Math.PI / 9;
       g.add(m);
     } else {
       const f = new THREE.Mesh(fallbackFor(type), bodyMats[side]);
