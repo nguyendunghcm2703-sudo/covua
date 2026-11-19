@@ -23,12 +23,13 @@ export function createView(container) {
 
   // ----- ảnh dựng sẵn -----
   const boardImg = document.createElement('canvas');
-  {
+  const boardImgFlipped = document.createElement('canvas'); // chữ lộn ngược sẵn, dùng khi bàn lật
+  for (const [img, fl] of [[boardImg, false], [boardImgFlipped, true]]) {
     const u = 120;
     const { W, H } = boardSize(u);
-    boardImg.width = W;
-    boardImg.height = H;
-    paintBoard(boardImg.getContext('2d'), u);
+    img.width = W;
+    img.height = H;
+    paintBoard(img.getContext('2d'), u, fl);
   }
   const tableImg = document.createElement('canvas');
   tableImg.width = tableImg.height = 256;
@@ -186,7 +187,7 @@ export function createView(container) {
     ctx.fillRect(-BOARD_W / 2 + 0.12, -BOARD_D / 2 + 0.16, BOARD_W, BOARD_D);
     ctx.fillStyle = PAL.slab;
     ctx.fillRect(-BOARD_W / 2 - 0.06, -BOARD_D / 2 - 0.06, BOARD_W + 0.12, BOARD_D + 0.12);
-    ctx.drawImage(boardImg, -BOARD_W / 2, -BOARD_D / 2, BOARD_W, BOARD_D);
+    ctx.drawImage(Math.abs(angle) > 1.57 ? boardImgFlipped : boardImg, -BOARD_W / 2, -BOARD_D / 2, BOARD_W, BOARD_D);
 
     // dấu hiệu
     if (lastFrom !== null) {

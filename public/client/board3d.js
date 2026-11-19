@@ -69,10 +69,18 @@ export function createView(container) {
   slab.receiveShadow = true;
   boardGroup.add(slab);
 
-  const face = new THREE.Mesh(
-    new THREE.PlaneGeometry(BOARD_W, BOARD_D),
-    new THREE.MeshStandardMaterial({ map: makeBoardTexture(renderer), roughness: 0.6 })
-  );
+  const faceMat = new THREE.MeshStandardMaterial({ map: makeBoardTexture(renderer, false), roughness: 0.6 });
+  const faceMaps = { normal: faceMat.map, flipped: null };
+  let labelsFlipped = false;
+  // Chữ a-h, 1-8 trên mặt bàn đổi sang bản lộn ngược khi bàn lật, để người ngồi bên Đen vẫn đọc xuôi.
+  function setLabelsFlipped(flag) {
+    if (flag === labelsFlipped) return;
+    labelsFlipped = flag;
+    if (flag && !faceMaps.flipped) faceMaps.flipped = makeBoardTexture(renderer, true);
+    faceMat.map = flag ? faceMaps.flipped : faceMaps.normal;
+    faceMat.needsUpdate = true;
+  }
+  const face = new THREE.Mesh(new THREE.PlaneGeometry(BOARD_W, BOARD_D), faceMat);
   face.rotation.x = -Math.PI / 2;
   face.position.y = 0.002;
   face.receiveShadow = true;
@@ -476,12 +484,14 @@ export function createView(container) {
       placeCamera(keep);
     }
     if (!animate) {
+      setLabelsFlipped(flag);
       boardGroup.rotation.y = target;
       return;
     }
     const from = boardGroup.rotation.y;
     tween(650, (p) => {
       boardGroup.rotation.y = from + (target - from) * ease(p);
+      if (p >= 0.5) setLabelsFlipped(flag); // đổi chữ giữa lúc xoay, khi bàn nằm nghiêng
     });
   }
 

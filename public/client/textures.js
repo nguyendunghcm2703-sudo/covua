@@ -32,11 +32,11 @@ export function makeTrayTexture(renderer) {
   return finish(c, renderer);
 }
 
-export function makeBoardTexture(renderer) {
+export function makeBoardTexture(renderer, flipped = false) {
   const u = 160;
   const { W, H } = boardSize(u);
   const c = canvasOf(W, H);
-  paintBoard(c.getContext('2d'), u);
+  paintBoard(c.getContext('2d'), u, flipped);
   return finish(c, renderer);
 }
 

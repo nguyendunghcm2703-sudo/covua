@@ -46,7 +46,7 @@ export function boardSize(u) {
 }
 
 // Mặt bàn cờ: 1 ô = u pixel. Dòng trên cùng là hạng 8 (đầu Đen, phía xa), cột trái là cột a.
-export function paintBoard(ctx, u = 160) {
+export function paintBoard(ctx, u = 160, flipped = false) {
   const { W, H } = boardSize(u);
   paintWood(ctx, W, H, PAL.frame, PAL.boardGrain, 11, 200);
   const g = (n) => u * (GRID_MARGIN + n);
@@ -66,13 +66,21 @@ export function paintBoard(ctx, u = 160) {
   ctx.font = `bold ${Math.round(u * 0.3)}px system-ui, sans-serif`;
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
+  // Bàn đang lật 180 độ thì vẽ chữ lộn ngược sẵn, để khi xoay lên người ngồi nhìn vẫn đọc xuôi.
+  const label = (text, x, y) => {
+    ctx.save();
+    ctx.translate(x, y);
+    if (flipped) ctx.rotate(Math.PI);
+    ctx.fillText(text, 0, 0);
+    ctx.restore();
+  };
   for (let i = 0; i < 8; i++) {
     const file = 'abcdefgh'[i];
     const rank = String(8 - i);
-    ctx.fillText(file, g(i) + u / 2, g(8) + u * 0.3);
-    ctx.fillText(file, g(i) + u / 2, g(0) - u * 0.3);
-    ctx.fillText(rank, g(0) - u * 0.3, g(i) + u / 2);
-    ctx.fillText(rank, g(8) + u * 0.3, g(i) + u / 2);
+    label(file, g(i) + u / 2, g(8) + u * 0.3);
+    label(file, g(i) + u / 2, g(0) - u * 0.3);
+    label(rank, g(0) - u * 0.3, g(i) + u / 2);
+    label(rank, g(8) + u * 0.3, g(i) + u / 2);
   }
 }
 
