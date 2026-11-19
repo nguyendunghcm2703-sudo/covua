@@ -19,7 +19,7 @@ const SEAT_POLAR_TALL = (30 * Math.PI) / 180; // màn dọc: nhìn cao hơn đ�
 const TOP_POLAR = 0.14;
 const TARGET = new THREE.Vector3(0, 0, 0);
 const PIECE_SCALE = 0.6; // mô hình GLB cao 1.5-2.6 đơn vị, đế rộng 1.05; thu về vừa một ô
-const MODEL_URL = (t) => new URL(`../models/${t}.glb`, import.meta.url).href;
+const MODEL_URL = (t) => `/models/${t}.glb`;
 const PIECE_HEIGHT = { p: 1.52, r: 1.87, b: 2.23, n: 2.3, q: 2.38, k: 2.62 };
 const TRAY_H = 0.08;
 const MARK_Y = 0.012;
@@ -100,24 +100,27 @@ export function createView(container) {
     const loader = new GLTFLoader();
     const types = Object.keys(PIECE_HEIGHT);
     let pending = types.length;
+    const errors = [];
     for (const t of types) {
       loader.load(
         MODEL_URL(t),
         (gltf) => {
-          gltf.scene.traverse((o) => {
-            if (o.isMesh) {
-              o.castShadow = true;
-              o.receiveShadow = true;
-              if (o.material && o.material.name !== 'body') {
-                o.material.roughness = Math.min(o.material.roughness ?? 0.5, 0.5);
+          try {
+            gltf.scene.traverse((o) => {
+              if (o.isMesh) {
+                o.castShadow = true;
+                o.receiveShadow = true;
               }
-            }
-          });
-          models[t] = gltf.scene;
+            });
+            models[t] = gltf.scene;
+          } catch (e) {
+            errors.push(`${t}: ${e && e.message}`);
+          }
           if (--pending === 0) done();
         },
         undefined,
-        () => {
+        (e) => {
+          errors.push(`${t}: ${(e && e.message) || 'không tải được'}`);
           if (--pending === 0) done();
         }
       );
@@ -125,7 +128,7 @@ export function createView(container) {
     function done() {
       loadedAll = true;
       if (alive && lastBoard) sync(lastBoard, lastTray); // thay quân dự phòng bằng quân thật
-      if (view.onModelsLoaded) view.onModelsLoaded(Object.keys(models).length === types.length);
+      if (view.onModelsLoaded) view.onModelsLoaded(Object.keys(models).length === types.length, errors.join('; '));
     }
   }
 

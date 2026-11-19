@@ -246,6 +246,9 @@ function attachView(v) {
   view = v;
   v.onSlow = handleSlow;
   v.onContextLost = handleLost;
+  v.onModelsLoaded = (ok, info) => {
+    if (!ok) toast("Chưa tải đủ quân 3D (" + (info || "lỗi mạng") + ")");
+  };
   bindPointer(v);
   v.setQuality(lowQuality);
   v.setRotateEnabled(rotateOn);
