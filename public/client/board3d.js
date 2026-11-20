@@ -163,7 +163,7 @@ export function createView(container) {
       });
       m.scale.setScalar(PIECE_SCALE);
       // Mã quay nghiêng (hơi hướng về phía đối thủ) để nhìn thấy rõ hình đầu ngựa từ phía người chơi.
-      m.rotation.y = side === 'w' ? Math.PI - Math.PI / 9 : Math.PI + Math.PI / 9; // cả hai nhìn sang trái, chếch về phía đối thủ
+      m.rotation.y = Math.PI + Math.PI / 9; // cả hai bên cùng nhìn sang trái và quay mặt về phía người xem, thấy rõ đôi mắt
       g.add(m);
     } else {
       const f = new THREE.Mesh(fallbackFor(type), bodyMats[side]);
