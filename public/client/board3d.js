@@ -14,8 +14,8 @@ import { makeBoardTexture, makeTableTexture, makeTrayTexture } from './textures.
 import { PAL } from './palette.js';
 import { TRAY_SCALE, layoutFor, traySlot, trayBase } from './tray.js';
 
-const SEAT_POLAR = (40 * Math.PI) / 180; // nhìn xiên ~50 độ so với mặt bàn
-const SEAT_POLAR_TALL = (30 * Math.PI) / 180; // màn dọc: nhìn cao hơn để mép xa rộng ra, quân rõ hơn
+const SEAT_POLAR = (46 * Math.PI) / 180; // nhìn xiên ~44 độ so với mặt bàn
+const SEAT_POLAR_TALL = (38 * Math.PI) / 180; // màn dọc: nhìn cao hơn để mép xa rộng ra, quân rõ hơn
 const TOP_POLAR = 0.14;
 const TARGET = new THREE.Vector3(0, 0, 0);
 const PIECE_SCALE = 0.6; // mô hình GLB cao 1.5-2.6 đơn vị, đế rộng 1.05; thu về vừa một ô
@@ -91,7 +91,7 @@ export function createView(container) {
   // dùng quân dự phòng dựng bằng hình tròn xoay để ván vẫn chơi được.
   const bodyMats = {
     w: new THREE.MeshStandardMaterial({ color: 0xece0c4, roughness: 0.38, metalness: 0.05 }),
-    b: new THREE.MeshStandardMaterial({ color: 0x3b2417, roughness: 0.4, metalness: 0.08 }),
+    b: new THREE.MeshStandardMaterial({ color: 0x6b3a1d, roughness: 0.4, metalness: 0.08 }),
   };
   const models = {}; // loại quân (p r n b q k) -> Object3D mẫu
   let loadedAll = false;
@@ -159,7 +159,7 @@ export function createView(container) {
       });
       m.scale.setScalar(PIECE_SCALE);
       // Mã quay nghiêng (hơi hướng về phía đối thủ) để nhìn thấy rõ hình đầu ngựa từ phía người chơi.
-      m.rotation.y = side === 'w' ? Math.PI / 9 : Math.PI + Math.PI / 9;
+      m.rotation.y = side === 'w' ? Math.PI - Math.PI / 9 : Math.PI + Math.PI / 9; // cả hai nhìn sang trái, chếch về phía đối thủ
       g.add(m);
     } else {
       const f = new THREE.Mesh(fallbackFor(type), bodyMats[side]);

@@ -90,13 +90,21 @@ export function paintPiece(ctx, ch, size = 256) {
   const white = ch === ch.toUpperCase();
   const glyph = (GLYPH[ch.toLowerCase()] || '?') + '\uFE0E';
   ctx.clearRect(0, 0, size, size);
-  ctx.font = `${Math.round(size * 0.9)}px "Segoe UI Symbol","Noto Sans Symbols 2","Apple Symbols","DejaVu Sans",serif`;
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
+  ctx.font = `${Math.round(size * 0.82)}px "Segoe UI Symbol","Noto Sans Symbols 2","Apple Symbols","DejaVu Sans",serif`;
+  ctx.textAlign = 'left';
+  ctx.textBaseline = 'alphabetic';
   ctx.lineJoin = 'round';
-  ctx.lineWidth = size * 0.07;
+  ctx.lineWidth = size * 0.06;
+  // Canh giữa theo khung chữ thật (mỗi font có lề khác nhau, canh theo 'center' dễ lệch).
+  const m = ctx.measureText(glyph);
+  const l = m.actualBoundingBoxLeft || 0;
+  const r = m.actualBoundingBoxRight || m.width;
+  const asc = m.actualBoundingBoxAscent || size * 0.7;
+  const desc = m.actualBoundingBoxDescent || 0;
+  const x = (size - (l + r)) / 2 + l;
+  const y = (size - (asc + desc)) / 2 + asc;
   ctx.strokeStyle = white ? '#3b2417' : '#f3e6c8';
-  ctx.strokeText(glyph, size / 2, size * 0.54);
+  ctx.strokeText(glyph, x, y);
   ctx.fillStyle = white ? PAL.whitePiece : PAL.blackPiece;
-  ctx.fillText(glyph, size / 2, size * 0.54);
+  ctx.fillText(glyph, x, y);
 }

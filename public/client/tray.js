@@ -11,6 +11,8 @@ import { BOARD_W, BOARD_D } from './geometry.js';
 
 export const TRAY_SCALE = 0.62;
 const ROW_GAP = 0.85;
+const TB_ROW_GAP = 0.7; // màn dọc: khay mỏng hơn để bàn cờ được phóng to
+const TB_OFF = 0.7;
 const COL_GAP = 0.9;
 const TB_PER_ROW = 8;
 const TB_ROWS = 2;
@@ -49,7 +51,7 @@ export function traySlot(side, index, layout) {
   const col = index % TB_PER_ROW;
   return {
     x: (col - (TB_PER_ROW - 1) / 2) * COL_GAP,
-    z: sign * (BOARD_D / 2 + 0.85 + row * ROW_GAP),
+    z: sign * (BOARD_D / 2 + TB_OFF + row * TB_ROW_GAP),
   };
 }
 
@@ -67,9 +69,9 @@ export function trayBase(side, layout) {
   }
   return {
     cx: 0,
-    cz: sign * (BOARD_D / 2 + 0.85 + ((TB_ROWS - 1) * ROW_GAP) / 2),
+    cz: sign * (BOARD_D / 2 + TB_OFF + ((TB_ROWS - 1) * TB_ROW_GAP) / 2),
     w: (TB_PER_ROW - 1) * COL_GAP + 1.0,
-    d: (TB_ROWS - 1) * ROW_GAP + 1.0,
+    d: (TB_ROWS - 1) * TB_ROW_GAP + 0.9,
   };
 }
 

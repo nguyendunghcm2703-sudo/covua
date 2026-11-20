@@ -67,7 +67,7 @@ export function projectBox(points, { distance, polar, azim = 0, fov = 40, w, h, 
 
 // Trả về { distance, ox, oy }: khoảng cách camera để vừa khít vùng trống, và độ dời ảnh (pixel)
 // để đặt giữa vùng trống (dùng cho camera.setViewOffset(w, h, -ox, -oy, w, h)).
-export function fitView({ layout, w, h, top = 0, bottom = 0, fov = 40, polar, azim = 0, pad = 8, rot = 0 }) {
+export function fitView({ layout, w, h, top = 0, bottom = 0, fov = 40, polar, azim = 0, pad = 3, rot = 0 }) {
   const pts = boxPoints(layout, 1.7, rot);
   const freeW = Math.max(60, w - 2 * pad);
   const freeH = Math.max(60, h - top - bottom - 2 * pad);

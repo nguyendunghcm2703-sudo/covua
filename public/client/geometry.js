@@ -24,7 +24,7 @@ export function worldToCell(x, z) {
 }
 
 export const EXTENT = {
-  tb: { w: 9.6, h: 14 },
+  tb: { w: 9.6, h: 13 },
   lr: { w: 14, h: 9.6 },
 };
 

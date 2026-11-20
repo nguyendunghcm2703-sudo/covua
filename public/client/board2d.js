@@ -8,7 +8,7 @@ import { PAL } from './palette.js';
 import { TRAY_SCALE, layoutFor, traySlot, trayBase, layoutBox, boxCenter } from './tray.js';
 
 const PIECE_R = 0.42;
-const FACE_R = 0.46;
+const FACE_R = 0.5;
 
 const ease = (p) => (p < 0.5 ? 2 * p * p : 1 - Math.pow(-2 * p + 2, 2) / 2);
 
@@ -124,9 +124,9 @@ export function createView(container) {
       ctx.ellipse(0.06 + lift * 0.3, 0.1 + lift * 0.5, r, r * 0.95, 0, 0, Math.PI * 2);
       ctx.fill();
     } else {
-      ctx.fillStyle = 'rgba(0,0,0,0.25)';
+      ctx.fillStyle = 'rgba(0,0,0,0.22)'; // bóng mỏng dưới chân quân
       ctx.beginPath();
-      ctx.arc(0.04 * sc, 0.06 * sc, r * 0.8, 0, Math.PI * 2);
+      ctx.ellipse(0, 0.3 * sc, r * 0.75, r * 0.22, 0, 0, Math.PI * 2);
       ctx.fill();
     }
     const k = 1 + lift * 0.5;

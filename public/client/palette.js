@@ -12,7 +12,7 @@ export const PAL = {
   frame: '#3b1d08',
   label: '#e9cf9c',
   whitePiece: '#ece0c4',
-  blackPiece: '#3b2417',
+  blackPiece: '#6b3a1d',
   trayBase: '#6a4424',
   trayGrain: 'rgba(10,5,2,A)',
 };
