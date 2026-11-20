@@ -2,8 +2,8 @@
 // Dùng chung cho cảnh 3D và chế độ 2D.
 
 export const PAL = {
-  background: '#140d08',
-  tableBase: '#2a1a10',
+  background: '#2a1c13',
+  tableBase: '#4a2f1c',
   tableGrain: 'rgba(10,5,2,A)',
   slab: '#4a2a14',
   light: '#f0d9b0',

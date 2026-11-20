@@ -46,6 +46,10 @@ export function createView(container) {
   Object.assign(key.shadow.camera, { left: -9, right: 9, top: 9, bottom: -9, near: 1, far: 32 });
   key.shadow.bias = -0.0004;
   scene.add(key);
+  // Đèn viền từ phía xa: vẽ vệt sáng dọc mép quân Đen ở hàng sau để chúng tách khỏi nền tối.
+  const rim = new THREE.DirectionalLight(0xffe6c8, 0.85);
+  rim.position.set(-3, 7, -14);
+  scene.add(rim);
 
   // ---------- bàn và mặt bàn cờ ----------
   const table = new THREE.Mesh(
@@ -91,7 +95,7 @@ export function createView(container) {
   // dùng quân dự phòng dựng bằng hình tròn xoay để ván vẫn chơi được.
   const bodyMats = {
     w: new THREE.MeshStandardMaterial({ color: 0xece0c4, roughness: 0.38, metalness: 0.05 }),
-    b: new THREE.MeshStandardMaterial({ color: 0x6b3a1d, roughness: 0.4, metalness: 0.08 }),
+    b: new THREE.MeshStandardMaterial({ color: 0x84492a, roughness: 0.34, metalness: 0.08, emissive: 0x1c0d05 }),
   };
   const models = {}; // loại quân (p r n b q k) -> Object3D mẫu
   let loadedAll = false;
