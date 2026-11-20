@@ -30,6 +30,7 @@ let uiHiddenUser = null; // chỉ có giá trị khi người chơi tự bấm �
 let moreOpen = false;
 let prefer2d = false;
 let rotateOn = false;
+let fullBoard = false; // nút "Bàn lớn"
 let slowHinted = false;
 let switching = false;
 let pendingJoin = null;
@@ -105,6 +106,7 @@ function loadPrefs() {
     }
     prefer2d = p.prefer2d === true;
     rotateOn = p.rotateOn === true;
+    fullBoard = p.fullBoard === true;
   } catch (e) {
     /* bỏ qua */
   }
@@ -113,7 +115,7 @@ function savePrefs() {
   try {
     localStorage.setItem(
       'covua3d.prefs',
-      JSON.stringify({ sound, autoFlip, lowQuality, uiHiddenUser, prefer2d, rotateOn })
+      JSON.stringify({ sound, autoFlip, lowQuality, uiHiddenUser, prefer2d, rotateOn, fullBoard })
     );
   } catch (e) {
     /* bỏ qua */
@@ -251,6 +253,7 @@ function attachView(v) {
   };
   bindPointer(v);
   v.setQuality(lowQuality);
+  v.setFullBoard(fullBoard);
   v.setRotateEnabled(rotateOn);
   v.setFlipped(flipped, false);
   syncView(cur());
@@ -860,6 +863,8 @@ function renderToggles() {
   $('btnSound').setAttribute('aria-pressed', String(sound));
   $('btnQuality').textContent = `Đồ họa: ${lowQuality ? 'thấp' : 'cao'}`;
   $('btnQuality').setAttribute('aria-pressed', String(lowQuality));
+  $('btnWide').textContent = `Bàn lớn: ${fullBoard ? 'bật' : 'tắt'}`;
+  $('btnWide').setAttribute('aria-pressed', String(fullBoard));
 }
 
 $('btnNew').addEventListener('click', newGame);
@@ -1003,6 +1008,12 @@ $('btnSound').addEventListener('click', () => {
   sound = !sound;
   setSoundEnabled(sound);
   unlockAudio();
+  savePrefs();
+  renderToggles();
+});
+$('btnWide').addEventListener('click', () => {
+  fullBoard = !fullBoard;
+  view.setFullBoard(fullBoard);
   savePrefs();
   renderToggles();
 });

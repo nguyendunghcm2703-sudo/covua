@@ -265,11 +265,12 @@ export function createView(container) {
     return { w: Math.max(1, container.clientWidth), h: Math.max(1, container.clientHeight) };
   }
 
+  let fullBoard = false; // bàn phóng to kín màn hình, khay quân bị ăn nằm ngoài khung
   let fitRot = 0; // góc lật bàn dùng để tính khung hình (đích của lần lật)
 
   function fitAt(polar, azim) {
     const { w, h } = viewSize();
-    return fitView({ layout, w, h, top: insetTop, bottom: insetBottom, fov: camera.fov, polar, azim, rot: fitRot });
+    return fitView({ layout, w, h, top: insetTop, bottom: insetBottom, fov: camera.fov, polar, azim, rot: fitRot, boardOnly: fullBoard });
   }
 
   // Đặt camera theo trạng thái cam: vị trí, độ dời hình, giới hạn zoom.
@@ -611,6 +612,10 @@ export function createView(container) {
     resetCamera: () => resetCamera(true),
     topView,
     setQuality,
+    setFullBoard(flag) {
+      fullBoard = !!flag;
+      placeCamera({ ...readCamera(), ratio: 1 });
+    },
     setInsets(top, bottom) {
       insetTop = Math.max(0, top | 0);
       insetBottom = Math.max(0, bottom | 0);

@@ -5,11 +5,13 @@
 // polar: góc từ phương thẳng đứng; azimuth: góc quanh trục đứng (0 = nhìn từ phía Đỏ).
 
 import { layoutBox } from './tray.js';
+import { BOARD_W, BOARD_D } from './geometry.js';
 
 // 8 điểm góc của khối chứa bàn + khay + quân. Gốc là TÂM BÀN CỜ (camera luôn nhìn vào đây để
 // trục giữa bàn thẳng đứng), rot là góc lật bàn quanh trục đứng (0 hoặc PI).
-export function boxPoints(layout, height = 2.2, rot = 0) {
-  const b = layoutBox(layout);
+export function boxPoints(layout, height = 2.2, rot = 0, boardOnly = false) {
+  // boardOnly: chỉ tính riêng bàn cờ (bỏ khay quân bị ăn) để bàn phóng to kín màn hình.
+  const b = boardOnly ? { minX: -BOARD_W / 2, maxX: BOARD_W / 2, minZ: -BOARD_D / 2, maxZ: BOARD_D / 2 } : layoutBox(layout);
   const cs = Math.cos(rot);
   const sn = Math.sin(rot);
   const pts = [];
@@ -67,8 +69,8 @@ export function projectBox(points, { distance, polar, azim = 0, fov = 40, w, h, 
 
 // Trả về { distance, ox, oy }: khoảng cách camera để vừa khít vùng trống, và độ dời ảnh (pixel)
 // để đặt giữa vùng trống (dùng cho camera.setViewOffset(w, h, -ox, -oy, w, h)).
-export function fitView({ layout, w, h, top = 0, bottom = 0, fov = 40, polar, azim = 0, pad = 3, rot = 0 }) {
-  const pts = boxPoints(layout, 2.2, rot);
+export function fitView({ layout, w, h, top = 0, bottom = 0, fov = 40, polar, azim = 0, pad = 3, rot = 0, boardOnly = false }) {
+  const pts = boxPoints(layout, 2.2, rot, boardOnly);
   const freeW = Math.max(60, w - 2 * pad);
   const freeH = Math.max(60, h - top - bottom - 2 * pad);
   const opts = { polar, azim, fov, w, h };

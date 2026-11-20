@@ -80,9 +80,10 @@ export function createView(container) {
     dirty = true;
   }
 
+  let fullBoard = false;
   function layoutNow() {
     layout = layoutFor(W / H);
-    const b = layoutBox(layout);
+    const b = fullBoard ? { minX: -BOARD_W / 2, maxX: BOARD_W / 2, minZ: -BOARD_D / 2, maxZ: BOARD_D / 2 } : layoutBox(layout);
     const availH = Math.max(80, H - insetTop - insetBottom);
     scale = Math.max(8, Math.min((W - 16) / (b.maxX - b.minX), (availH - 16) / (b.maxZ - b.minZ)));
     cy = insetTop + availH / 2;
@@ -410,6 +411,11 @@ export function createView(container) {
     resetCamera() {},
     topView() {},
     setQuality() {},
+    setFullBoard(flag) {
+      fullBoard = !!flag;
+      layoutNow();
+      draw();
+    },
     setRotateEnabled() {},
     setInsets(top, bottom) {
       insetTop = Math.max(0, top | 0);
